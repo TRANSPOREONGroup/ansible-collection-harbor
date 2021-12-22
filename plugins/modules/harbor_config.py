@@ -63,7 +63,7 @@ class HarborConfigModule(HarborBaseModule):
         if desired_configuration:
             after_calculated = before.copy()
             for configuration in list(desired_configuration):
-                if not configuration == "oidc_client_secret":
+                if not configuration in ["oidc_client_secret", "ldap_search_password"] :
                     # Check if configuration option is available
                     if configuration not in before:
                         self.module.fail_json(msg=f"Configuration option {configuration} unavailable.", **result)
