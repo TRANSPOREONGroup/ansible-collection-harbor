@@ -6,7 +6,7 @@
 
 DOCUMENTATION = '''
 ---
-module: harbor_scan_all_collection
+module: harbor_scan_all_schedule
 author:
   - Joshua Hügli (@joschi36)
 version_added: ""
@@ -54,11 +54,11 @@ class HarborScanAllScheduleModule(HarborBaseModule):
         if not put_schedule_request.status_code == 200:
             self.module.fail_json(msg=self.requestParse(put_schedule_request))
 
-    def constructDesired(self, schedule_cron):
+    def constructDesired(self, schedule_cron, type):
         return {
             "schedule": {
                 "cron": schedule_cron,
-                "type": "Custom"
+                "type": type
             }
         }
 
@@ -68,6 +68,8 @@ class HarborScanAllScheduleModule(HarborBaseModule):
         argument_spec = copy.deepcopy(self.COMMON_ARG_SPEC)
         argument_spec.update(
             schedule_cron=dict(type='str', required=True),
+            type=dict(type='str', required=False, default='Custom',
+                choices=['None', 'Hourly', 'Daily', 'Weekly', 'Custom']),
             state=dict(default='present', choices=['present'])
         )
         return argument_spec
@@ -84,7 +86,8 @@ class HarborScanAllScheduleModule(HarborBaseModule):
             changed=False
         )
 
-        desired = self.constructDesired(self.module.params["schedule_cron"])
+        desired = self.constructDesired(self.module.params["schedule_cron"],
+                                        self.module.params["type"])
         before = self.getSchedule()
 
         if desired != before:
