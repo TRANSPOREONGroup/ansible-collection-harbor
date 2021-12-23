@@ -109,11 +109,7 @@ class HarborRegistryModule(HarborBaseModule):
                 self.module.exit_json(**self.result)
 
             if self.module.check_mode:
-                self.result['changed'] = True
-                self.result['diff'] = {
-                    "before": json.dumps(existing_registry, indent=4),
-                    "after": json.dumps(after_calculated, indent=4),
-                }
+                self.setChanges(existing_registry, after_calculated)
 
             else:
                 set_request = requests.put(

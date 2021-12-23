@@ -19,7 +19,6 @@ extends_documentation_fragment:
 '''
 
 import copy
-import json
 
 import requests
 from ansible.module_utils.basic import AnsibleModule
@@ -90,23 +89,14 @@ class HarborScanAllScheduleModule(HarborBaseModule):
         if desired != before:
             # Test change with checkmode
             if self.module.check_mode:
-                self.result['changed'] = True
-                self.result['diff'] = {
-                    "before": json.dumps(before, indent=4),
-                    "after": json.dumps(desired, indent=4),
-                }
+                self.setChanges(before, desired)
 
             # Apply change without checkmode
             else:
                 self.putSchedule(desired)
-
                 after = self.getSchedule()
 
-                self.result['changed'] = True
-                self.result['diff'] = {
-                    "before": json.dumps(before, indent=4),
-                    "after": json.dumps(after, indent=4),
-                }
+                self.setChanges(before, after)
 
         self.module.exit_json(**self.result)
 

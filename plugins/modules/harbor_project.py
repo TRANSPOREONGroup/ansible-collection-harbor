@@ -115,12 +115,7 @@ class HarborProjectModule(HarborBaseModule):
                 self.module.exit_json(**self.result)
 
             if self.module.check_mode:
-                self.result['changed'] = True
-                self.result['diff'] = {
-                    "before": json.dumps(existing_project, indent=4),
-                    "after": json.dumps(after_calculated, indent=4),
-                }
-
+                self.setChanges(existing_project, after_calculated)
             else:
                 set_request = requests.put(
                     f'{self.api_url}/projects/{existing_project["project_id"]}',
