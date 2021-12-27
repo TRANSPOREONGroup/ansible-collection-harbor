@@ -58,14 +58,14 @@ class HarborGarbageCollectionModule(HarborBaseModule):
         if not put_gc_request.status_code == 200:
             self.module.fail_json(msg=self.requestParse(put_gc_request))
 
-    def constructDesired(self, delete_untagged, schedule_cron):
+    def constructDesired(self, delete_untagged, schedule_cron, type):
         return {
             "parameters": {
                 "delete_untagged": delete_untagged
             },
             "schedule": {
                 "cron": schedule_cron,
-                "type": "Custom"
+                "type": type
             }
         }
 
@@ -76,6 +76,8 @@ class HarborGarbageCollectionModule(HarborBaseModule):
         argument_spec.update(
             schedule_cron=dict(type='str', required=True),
             delete_untagged=dict(type='bool', required=True),
+            type=dict(type='str', required=False, default='Custom',
+                choices=['None', 'Hourly', 'Daily', 'Weekly', 'Custom']),
             state=dict(default='present', choices=['present'])
         )
         return argument_spec
@@ -92,7 +94,9 @@ class HarborGarbageCollectionModule(HarborBaseModule):
             changed=False
         )
 
-        desired = self.constructDesired(self.module.params["delete_untagged"], self.module.params["schedule_cron"])
+        desired = self.constructDesired(self.module.params["delete_untagged"],
+                                        self.module.params["schedule_cron"],
+                                        self.module.params["type"])
         before = self.getGarbageCollection()
 
         if desired != before:
