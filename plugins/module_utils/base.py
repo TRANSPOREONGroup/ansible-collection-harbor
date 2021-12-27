@@ -1,3 +1,4 @@
+import json
 from ansible.module_utils.urls import url_argument_spec
 from ansible.module_utils.basic import AnsibleModule
 import requests
@@ -57,3 +58,10 @@ class HarborBaseModule(object):
             f"Body: {request.text}"
 
         return message
+
+    def setChanges(self, before, after):
+        self.result['changed'] = True
+        self.result['diff'] = {
+            "before": json.dumps(before, indent=4),
+            "after": json.dumps(after, indent=4),
+        }

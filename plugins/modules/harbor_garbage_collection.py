@@ -98,23 +98,14 @@ class HarborGarbageCollectionModule(HarborBaseModule):
         if desired != before:
             # Test change with checkmode
             if self.module.check_mode:
-                self.result['changed'] = True
-                self.result['diff'] = {
-                    "before": json.dumps(before, indent=4),
-                    "after": json.dumps(desired, indent=4),
-                }
+                self.setChanges(before, desired)
 
             # Apply change without checkmode
             else:
                 self.putGarbageCollection(desired)
 
                 after = self.getGarbageCollection()
-
-                self.result['changed'] = True
-                self.result['diff'] = {
-                    "before": json.dumps(before, indent=4),
-                    "after": json.dumps(after, indent=4),
-                }
+                self.setChanges(before, after)
 
         self.module.exit_json(**self.result)
 
