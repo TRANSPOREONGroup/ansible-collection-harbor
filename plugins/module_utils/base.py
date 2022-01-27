@@ -65,3 +65,18 @@ class HarborBaseModule(object):
             "before": json.dumps(before, indent=4),
             "after": json.dumps(after, indent=4),
         }
+
+    def errorHandlingPostOrPutRequest(self, request):
+        if request.status_code == 200 or request.status_code == 201:
+            pass
+        elif request.status_code == 401:
+            self.module.fail_json(msg="User need to log in first.", **self.result)
+        elif request.status_code == 403:
+            self.module.fail_json(msg="User does not have permission of admin role.", **self.result)
+        elif request.status_code == 500:
+            self.module.fail_json(msg="Unexpected internal errors.", **self.result)
+        else:
+            self.module.fail_json(msg=f"""
+                Unknown HTTP status code: {request.status_code}
+                Body: {request.text}
+            """)

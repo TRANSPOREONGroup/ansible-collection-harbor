@@ -7,7 +7,7 @@ DOCUMENTATION = r'''
 ---
 module: harbor_retention
 author:
-  - Enes Malik Sen (@Dragonax42)
+  - Enes Malik Sen (@esen-transporeon)
 version_added: ""
 short_description: Manage retention policies
 description:
@@ -116,21 +116,6 @@ class HarborRetentionModule(HarborBaseModule):
         if not request.status_code == 200:
             self.module.fail_json(msg=self.requestParse(request))
         return request
-
-    def errorHandlingPostOrPutRequest(self, request):
-        if request.status_code == 200 or request.status_code == 201:
-            pass
-        elif request.status_code == 401:
-            self.module.fail_json(msg="User need to log in first.", **self.result)
-        elif request.status_code == 403:
-            self.module.fail_json(msg="User does not have permission of admin role.", **self.result)
-        elif request.status_code == 500:
-            self.module.fail_json(msg="Unexpected internal errors.", **self.result)
-        else:
-            self.module.fail_json(msg=f"""
-                Unknown HTTP status code: {request.status_code}
-                Body: {request.text}
-            """)
 
     def __init__(self):
         self.module = AnsibleModule(
