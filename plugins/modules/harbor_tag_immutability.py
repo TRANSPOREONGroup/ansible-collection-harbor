@@ -194,7 +194,7 @@ class HarborTagImmutabilityModule(HarborBaseModule):
         # Get Project ID
         project = self.getProjectByName(self.module.params['project'])
         if not project:
-            self.module.fail_json(msg="Project not found", **self.self.result)
+            self.module.fail_json(msg="Project not found")
         project_id = project["project_id"]
 
         desired_tag_immutability_list = self.createDesiredTagImmutabilityList(project_id)
@@ -216,7 +216,6 @@ class HarborTagImmutabilityModule(HarborBaseModule):
 
         # Apply change without checkmode
         else:
-
             tag_immutabilities_to_add = [x for x in desired_tag_immutability_list if x not in before]
 
             self.createTagImmutabilities(tag_immutabilities_to_add, project_id)
@@ -225,7 +224,6 @@ class HarborTagImmutabilityModule(HarborBaseModule):
             tag_immutabilities_to_delete_ids = [before_tag_immutability_ids[x] for x in tag_immutabilities_to_delete_keys]
 
             self.deleteTagImmutabilities(tag_immutabilities_to_delete_ids, project_id)
-
 
             after_request = self.getTagImmutabilityList(project_id)
             after = after_request.json()
