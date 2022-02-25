@@ -160,7 +160,7 @@ class HarborRetentionModule(HarborBaseModule):
                     json=desired_retention_policy,
                     verify=self.api_verify
                 )
-                self.errorHandlingPostOrPutRequest(set_request)
+                self.errorHandlingHttpRequest(set_request)
 
                 after_request = self.getRetentionPolicy(project_retention_id)
                 after = after_request.json()
@@ -179,7 +179,7 @@ class HarborRetentionModule(HarborBaseModule):
                     json=desired_retention_policy,
                     verify=self.api_verify
                 )
-                self.errorHandlingPostOrPutRequest(create_retentions_request)
+                self.errorHandlingHttpRequest(create_retentions_request)
 
                 project = self.getProjectByName(self.module.params['project'])
                 project_retention_id = project["metadata"]["retention_id"]
