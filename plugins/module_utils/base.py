@@ -62,11 +62,11 @@ class HarborBaseModule(object):
     def setChanges(self, before, after):
         self.result['changed'] = True
         self.result['diff'] = {
-            "before": json.dumps(before, indent=4),
-            "after": json.dumps(after, indent=4),
+            "before": before,
+            "after": after,
         }
 
-    def errorHandlingPostOrPutRequest(self, request):
+    def errorHandlingHttpRequest(self, request):
         if request.status_code == 200 or request.status_code == 201:
             pass
         elif request.status_code == 401:
